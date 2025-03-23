@@ -13,6 +13,9 @@ use App\Repositories\CategoryRepository;
 use App\Repositories\Interfaces\PlantRepositoryInterface;
 use App\Repositories\PlantRepository;
 
+use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Repositories\OrderRepository;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -25,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
 
         $this->app->bind(PlantRepositoryInterface::class, PlantRepository::class);
+
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
     }
 
     /**
