@@ -10,6 +10,9 @@ use App\Repositories\AuthRepository;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
 
+use App\Repositories\Interfaces\PlantRepositoryInterface;
+use App\Repositories\PlantRepository;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -20,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
 
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+
+        $this->app->bind(PlantRepositoryInterface::class, PlantRepository::class);
     }
 
     /**
