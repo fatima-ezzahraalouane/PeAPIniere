@@ -16,20 +16,23 @@ class Plant extends Model
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-                ->generateSlugsFrom('name')
-                ->saveSlugsTo('slug');
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function images() {
+    public function images()
+    {
         return $this->hasMany(Image::class);
     }
 
-    public function orders() {
-        return $this->belongsToMany(Order::class, 'plant_order')
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)
                     ->withPivot('quantity')
                     ->withTimestamps();
     }
