@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PlantController;
+use App\Http\Controllers\OrderController;
+
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -33,7 +35,7 @@ Route::get('/plants', [PlantController::class, 'index']);
 Route::get('/plants/{slug}', [PlantController::class, 'show']);
 
 Route::middleware(['auth:api', 'role:admin'])->group(function () {
-    
+
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{slug}', [CategoryController::class, 'update']);
     Route::delete('/categories/{slug}', [CategoryController::class, 'destroy']);
@@ -41,6 +43,17 @@ Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::post('/plants', [PlantController::class, 'store']);
     Route::put('/plants/{slug}', [PlantController::class, 'update']);
     Route::delete('/plants/{slug}', [PlantController::class, 'destroy']);
+});
+
+Route::middleware(['auth:api', 'role:client'])->group(function () {
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'myOrders']);
+    Route::delete('/orders/{id}', [OrderController::class, 'cancel']);
+});
+
+Route::middleware(['auth:api', 'role:employee'])->group(function () {
+    Route::get('/admin/orders', [OrderController::class, 'allOrders']);
+    Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
 });
 
 
