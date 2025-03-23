@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PlantController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\StatisticsController;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -54,6 +55,13 @@ Route::middleware(['auth:api', 'role:client'])->group(function () {
 Route::middleware(['auth:api', 'role:employee'])->group(function () {
     Route::get('/admin/orders', [OrderController::class, 'allOrders']);
     Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
+});
+
+Route::middleware(['auth:api', 'role:admin'])->prefix('admin/statistics')->group(function () {
+    Route::get('/total-orders', [StatisticsController::class, 'totalOrders']);
+    Route::get('/total-revenue', [StatisticsController::class, 'totalRevenue']);
+    Route::get('/top-plants', [StatisticsController::class, 'topPlants']);
+    Route::get('/sales-by-category', [StatisticsController::class, 'salesByCategory']);
 });
 
 
