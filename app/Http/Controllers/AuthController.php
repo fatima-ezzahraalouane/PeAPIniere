@@ -16,11 +16,23 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $request->validate([
+            'name'     => 'required|string',
+            'email'    => 'required|string|email|unique:users',
+            'password' => 'required|string|min:6',
+            'role'     => 'in:client,employee,admin'
+        ]);
+
         return $this->auth->register($request);
     }
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|string'
+        ]);
+
         return $this->auth->login($request);
     }
 

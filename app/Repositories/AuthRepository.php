@@ -14,13 +14,6 @@ class AuthRepository implements AuthRepositoryInterface
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'name'     => 'required|string',
-            'email'    => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6',
-            'role'     => 'in:client,employee,admin'
-        ]);
-
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
@@ -45,10 +38,10 @@ class AuthRepository implements AuthRepositoryInterface
         }
 
         $user = Auth::user();
-
         $token = JWTAuth::fromUser($user);
+
         return response()->json([
-            'user'  => auth()->user(),
+            'user'  => $user,
             'token' => $token
         ], 200);
     }
