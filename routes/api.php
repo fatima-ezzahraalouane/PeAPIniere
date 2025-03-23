@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PlantController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -28,10 +29,18 @@ Route::middleware('auth:api')->group(function () {
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{slug}', [CategoryController::class, 'show']);
 
+Route::get('/plants', [PlantController::class, 'index']);
+Route::get('/plants/{slug}', [PlantController::class, 'show']);
+
 Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{slug}', [CategoryController::class, 'update']);
     Route::delete('/categories/{slug}', [CategoryController::class, 'destroy']);
+
+    Route::post('/plants', [PlantController::class, 'store']);
+    Route::put('/plants/{slug}', [PlantController::class, 'update']);
+    Route::delete('/plants/{slug}', [PlantController::class, 'destroy']);
 });
 
 
