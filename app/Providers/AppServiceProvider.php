@@ -16,6 +16,9 @@ use App\Repositories\PlantRepository;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\OrderRepository;
 
+use App\Repositories\Interfaces\StatisticsRepositoryInterface;
+use App\Repositories\StatisticsRepository;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -30,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PlantRepositoryInterface::class, PlantRepository::class);
 
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
+
+        $this->app->bind(StatisticsRepositoryInterface::class, StatisticsRepository::class);
     }
 
     /**
