@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\StatisticsRepositoryInterface;
 
+/**
+ * @OA\Tag(
+ *     name="Statistiques",
+ *     description="Statistiques liées aux ventes et commandes"
+ * )
+ */
 class StatisticsController extends Controller
 {
     protected $repo;
