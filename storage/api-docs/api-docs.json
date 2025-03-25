@@ -1,0 +1,799 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "PéAPInière API",
+        "description": "Documentation de l'API pour la pépinière",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Inscription d’un utilisateur",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Fatima"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "fatima@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "client"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Utilisateur créé + token"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Connexion d’un utilisateur",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "fatima@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie + token"
+                    },
+                    "401": {
+                        "description": "Identifiants incorrects"
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Afficher l’utilisateur connecté",
+                "operationId": "9d9bc556f927575aa492a88c28fe5908",
+                "responses": {
+                    "200": {
+                        "description": "Infos utilisateur connecté"
+                    },
+                    "401": {
+                        "description": "Token manquant ou invalide"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Catégories"
+                ],
+                "summary": "Lister toutes les catégories",
+                "operationId": "3f5817a34833d0a1f4af4548dd3aeaba",
+                "responses": {
+                    "200": {
+                        "description": "Liste des catégories"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Catégories"
+                ],
+                "summary": "Créer une nouvelle catégorie",
+                "operationId": "71fcad552bb0eaba9fb191fd8d8dcab0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Aromatiques"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Catégorie créée"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/categories/{slug}": {
+            "get": {
+                "tags": [
+                    "Catégories"
+                ],
+                "summary": "Afficher une catégorie par son slug",
+                "operationId": "388285a26637f27fd1a3701a8feaf934",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug de la catégorie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Catégorie trouvée"
+                    },
+                    "404": {
+                        "description": "Catégorie non trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Catégories"
+                ],
+                "summary": "Modifier une catégorie",
+                "operationId": "4e2b6f574bea6adc2fe8140b42b84afa",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug de la catégorie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Médicinales"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Catégorie mise à jour"
+                    },
+                    "404": {
+                        "description": "Catégorie non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Catégories"
+                ],
+                "summary": "Supprimer une catégorie",
+                "operationId": "cc0a73dfff7acad27d1ee72fe027b5dc",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug de la catégorie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Catégorie supprimée"
+                    },
+                    "404": {
+                        "description": "Catégorie non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "post": {
+                "tags": [
+                    "Commandes"
+                ],
+                "summary": "Passer une commande (client)",
+                "operationId": "d690d6834318e9b064df441e854de8b9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "plants": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Commande enregistrée avec succès"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/my-orders": {
+            "get": {
+                "tags": [
+                    "Commandes"
+                ],
+                "summary": "Voir mes commandes (client connecté)",
+                "operationId": "d77e349b1ba5eef79b599b493c041c95",
+                "responses": {
+                    "200": {
+                        "description": "Liste des commandes du client"
+                    },
+                    "404": {
+                        "description": "Aucune commande trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{id}/cancel": {
+            "delete": {
+                "tags": [
+                    "Commandes"
+                ],
+                "summary": "Annuler une commande (si en attente)",
+                "operationId": "ba2e173c1955c3d1edee33d0da6bc5f7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la commande",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Commande annulée avec succès"
+                    },
+                    "403": {
+                        "description": "Commande déjà préparée"
+                    },
+                    "404": {
+                        "description": "Commande non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/all-orders": {
+            "get": {
+                "tags": [
+                    "Commandes"
+                ],
+                "summary": "Voir toutes les commandes (employé)",
+                "operationId": "1aa65b4d164d1b310b1ff2887d4dcfc5",
+                "responses": {
+                    "200": {
+                        "description": "Liste de toutes les commandes"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{id}/status": {
+            "put": {
+                "tags": [
+                    "Commandes"
+                ],
+                "summary": "Mettre à jour le statut d'une commande (employé)",
+                "operationId": "a6abe7e1fd2257d370bf832e8075f50c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la commande",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "en_attente",
+                                            "en_preparation",
+                                            "livrée"
+                                        ],
+                                        "example": "livrée"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Statut mis à jour"
+                    },
+                    "404": {
+                        "description": "Commande non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/plants": {
+            "get": {
+                "tags": [
+                    "Plantes"
+                ],
+                "summary": "Lister toutes les plantes",
+                "operationId": "6e2a3a91967b1e364c87b755cd5152f6",
+                "responses": {
+                    "200": {
+                        "description": "Liste des plantes avec images et catégorie"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Plantes"
+                ],
+                "summary": "Créer une nouvelle plante",
+                "operationId": "d005e00370ab9bd321d50ba5dde92042",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price",
+                                    "category_id",
+                                    "images"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Basilic aromatique"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Une plante aromatique très utilisée."
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 12.5
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "https://example.com/basilic.jpg"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Plante créée avec succès"
+                    },
+                    "422": {
+                        "description": "Erreur de validation (ex. + de 4 images)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/plants/{slug}": {
+            "get": {
+                "tags": [
+                    "Plantes"
+                ],
+                "summary": "Afficher une plante par son slug",
+                "operationId": "cf101271037916b9c4a3e8bed0a3bf4e",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug de la plante",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plante trouvée"
+                    },
+                    "404": {
+                        "description": "Plante non trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Plantes"
+                ],
+                "summary": "Modifier une plante existante",
+                "operationId": "e5981af9ce55cca7fc8eee04c3c0b488",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug de la plante à modifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price",
+                                    "category_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Menthe fraîche"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Parfumée et fraîche."
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 10
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "https://example.com/menthe1.jpg"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Plante mise à jour"
+                    },
+                    "422": {
+                        "description": "Nombre d'images dépasse 4"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Plantes"
+                ],
+                "summary": "Supprimer une plante",
+                "operationId": "72abaa41b86e9d3386648d6c79c2b1ab",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug de la plante",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plante supprimée"
+                    },
+                    "404": {
+                        "description": "Plante non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/statistics/total-orders": {
+            "get": {
+                "tags": [
+                    "Statistiques"
+                ],
+                "summary": "Nombre total de commandes",
+                "description": "Utilise la méthode Query Builder :\n     * - `DB::table('orders')` : sélectionne la table `orders`\n     * - `->count()` : compte le nombre total de lignes (commandes)",
+                "operationId": "126367309951974d5a6fd24b527c8f27",
+                "responses": {
+                    "200": {
+                        "description": "Nombre total de commandes"
+                    },
+                    "404": {
+                        "description": "Aucune commande trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/statistics/total-revenue": {
+            "get": {
+                "tags": [
+                    "Statistiques"
+                ],
+                "summary": "Montant total des ventes",
+                "description": "Calcule le chiffre d'affaires total :\n     * - `DB::table('order_plant')` : accède à la table pivot\n     * - `->join('plants', ...)` : jointure pour accéder au prix de chaque plante\n     * - `->select(DB::raw('SUM(order_plant.quantity * plants.price) as total'))` : somme des ventes\n     * - `->value('total')` : retourne le total directement",
+                "operationId": "303b679ac70802176253feb45155bb38",
+                "responses": {
+                    "200": {
+                        "description": "Montant total des ventes"
+                    },
+                    "404": {
+                        "description": "Aucune vente enregistrée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/statistics/top-plants": {
+            "get": {
+                "tags": [
+                    "Statistiques"
+                ],
+                "summary": "Top 5 des plantes les plus commandées",
+                "description": "Retourne les plantes les plus populaires :\n     * - `DB::table('order_plant')` : table pivot\n     * - `->join('plants', ...)` : accède aux noms des plantes\n     * - `->select('plants.name', DB::raw('SUM(order_plant.quantity) as total_quantity'))` : total commandé par plante\n     * - `->groupBy('plants.name')` : groupement par nom\n     * - `->orderByDesc('total_quantity')` : tri décroissant\n     * - `->limit(5)` : limite aux 5 premières",
+                "operationId": "62281b97863015c9434929a9ab89dee8",
+                "responses": {
+                    "200": {
+                        "description": "Liste des 5 plantes les plus populaires"
+                    },
+                    "404": {
+                        "description": "Aucune plante commandée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/statistics/sales-by-category": {
+            "get": {
+                "tags": [
+                    "Statistiques"
+                ],
+                "summary": "Répartition des ventes par catégorie",
+                "description": "Calcule les ventes par catégorie :\n     * - Jointure sur `order_plant`, `plants`, `categories`\n     * - `SUM(order_plant.quantity * plants.price)` : total des ventes par catégorie\n     * - `groupBy('categories.name')` : groupement par catégorie",
+                "operationId": "51d57171778d3e139a7d0898072e56b3",
+                "responses": {
+                    "200": {
+                        "description": "Liste des ventes par catégorie"
+                    },
+                    "404": {
+                        "description": "Aucune vente enregistrée par catégorie"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Token JWT pour accéder aux routes protégées",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Statistiques",
+            "description": "Statistiques liées aux ventes et commandes"
+        },
+        {
+            "name": "Authentification",
+            "description": "Authentification"
+        },
+        {
+            "name": "Catégories",
+            "description": "Catégories"
+        },
+        {
+            "name": "Commandes",
+            "description": "Commandes"
+        },
+        {
+            "name": "Plantes",
+            "description": "Plantes"
+        }
+    ]
+}
