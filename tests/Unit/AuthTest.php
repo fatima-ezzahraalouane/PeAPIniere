@@ -1,186 +1,157 @@
 <?php
 
-namespace Tests\Unit\Repositories;
+namespace Tests\Unit;
 
-use Mockery;
+use Tests\TestCase;
+use Illuminate\Http\Request;
 use App\Models\User;
 use App\Repositories\AuthRepository;
-use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Tests\TestCase;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Response;
+use Mockery;
 
 class AuthTest extends TestCase
 {
-    protected $authRepository;
-    protected $userMock;
-    protected $requestMock;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        // Create mocks
-        $this->userMock = Mockery::mock('alias:App\Models\User');
-        $this->requestMock = Mockery::mock(Request::class);
-
-        // Instantiate the repository
-        $this->authRepository = new AuthRepository();
-    }
-
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         Mockery::close();
-        parent::tearDown();
     }
 
-    public function testRegisterCreatesUserAndReturnsToken()
+    public function test_register_success()
     {
-        // Prepare test data
-        $userData = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => 'password123',
-            'role' => 'client'
-        ];
+        $request = new Request([
+            'name'     => 'Fatima',
+            'email'    => 'fatima@example.com',
+            'password' => 'secret123',
+            'role'     => 'client'
+        ]);
 
-        $this->requestMock->shouldReceive('all')
+        Hash::shouldReceive('make')
             ->once()
-            ->andReturn($userData);
+            ->with('secret123')
+            ->andReturn('hashed_password');
 
-        // Mock request input
-        $this->requestMock->shouldReceive('input')
-            ->with('name')
-            ->andReturn($userData['name']);
-        $this->requestMock->shouldReceive('input')
-            ->with('email')
-            ->andReturn($userData['email']);
-        $this->requestMock->shouldReceive('input')
-            ->with('password')
-            ->andReturn($userData['password']);
-        $this->requestMock->shouldReceive('input')
-            ->with('role')
-            ->andReturn($userData['role']);
+        $mockUser = new User([
+            'name'     => 'Fatima',
+            'email'    => 'fatima@example.com',
+            'password' => 'hashed_password',
+            'role'     => 'client',
+        ]);
 
-        // Mock User creation
-        $createdUser = new User($userData);
-        $this->userMock->shouldReceive('create')
+        // Mock User::create
+        $userMock = Mockery::mock('alias:' . User::class);
+        $userMock->shouldReceive('create')
             ->once()
-            ->with(Mockery::on(function ($arg) use ($userData) {
-                return $arg['name'] === $userData['name'] &&
-                    $arg['email'] === $userData['email'] &&
-                    Hash::check($userData['password'], $arg['password']) &&
-                    $arg['role'] === $userData['role'];
-            }))
-            ->andReturn($createdUser);
+            ->with([
+                'name'     => 'Fatima',
+                'email'    => 'fatima@example.com',
+                'password' => 'hashed_password',
+                'role'     => 'client',
+            ])
+            ->andReturn($mockUser);
 
         // Mock JWTAuth
-        $token = 'mocked-token';
         JWTAuth::shouldReceive('fromUser')
             ->once()
-            ->with($createdUser)
-            ->andReturn($token);
+            ->with($mockUser)
+            ->andReturn('mocked_token');
 
-        // Execute the register method
-        $response = $this->authRepository->register($this->requestMock);
+        $repo = new AuthRepository();
+        $response = $repo->register($request);
 
-        // Assert response
-        $this->assertEquals(201, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals($userData['name'], $responseData['user']['name']);
-        $this->assertEquals($token, $responseData['token']);
+        $response->assertStatus(201)
+            ->assertJson([
+                'user' => [
+                    'name'  => 'Fatima',
+                    'email' => 'fatima@example.com',
+                    'role'  => 'client',
+                ],
+                'token' => 'mocked_token'
+            ]);
     }
 
-    public function testLoginSuccess()
+    public function test_login_success()
     {
-        // Prepare test data
-        $credentials = [
-            'email' => 'john@example.com',
-            'password' => 'password123'
-        ];
+        $request = new Request([
+            'email' => 'fatima@example.com',
+            'password' => 'secret123',
+        ]);
 
-        // Mock request
-        $this->requestMock->shouldReceive('only')
-            ->with('email', 'password')
-            ->andReturn($credentials);
+        $user = new User([
+            'name'  => 'Fatima',
+            'email' => 'fatima@example.com',
+            'role'  => 'client',
+        ]);
 
-        Auth::shouldReceive('guard')
-            ->andReturnSelf();
-
-        // Mock Auth
         Auth::shouldReceive('attempt')
             ->once()
-            ->with($credentials)
+            ->with(['email' => 'fatima@example.com', 'password' => 'secret123'])
             ->andReturn(true);
 
-        $user = new User(['name' => 'John Doe', 'email' => $credentials['email']]);
         Auth::shouldReceive('user')
             ->once()
             ->andReturn($user);
 
-        // Mock JWTAuth
-        $token = 'mocked-token';
         JWTAuth::shouldReceive('fromUser')
             ->once()
             ->with($user)
-            ->andReturn($token);
+            ->andReturn('mocked_token');
 
-        // Execute login
-        $response = $this->authRepository->login($this->requestMock);
+        $repo = new AuthRepository();
+        $response = $repo->login($request);
 
-        // Assert response
-        $this->assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals($user->name, $responseData['user']['name']);
-        $this->assertEquals($token, $responseData['token']);
+        $response->assertStatus(200)
+            ->assertJson([
+                'user' => [
+                    'name'  => 'Fatima',
+                    'email' => 'fatima@example.com',
+                    'role'  => 'client',
+                ],
+                'token' => 'mocked_token'
+            ]);
     }
 
-    public function testLoginFailure()
+    public function test_login_failure()
     {
-        // Prepare test data
-        $credentials = [
-            'email' => 'john@example.com',
-            'password' => 'wrongpassword'
-        ];
+        $request = new Request([
+            'email' => 'wrong@example.com',
+            'password' => 'wrongpass',
+        ]);
 
-        // Mock request
-        $this->requestMock->shouldReceive('only')
-            ->with('email', 'password')
-            ->andReturn($credentials);
-
-        // Mock Auth failure
         Auth::shouldReceive('attempt')
             ->once()
-            ->with($credentials)
+            ->with(['email' => 'wrong@example.com', 'password' => 'wrongpass'])
             ->andReturn(false);
 
-        // Execute login
-        $response = $this->authRepository->login($this->requestMock);
+        $repo = new AuthRepository();
+        $response = $repo->login($request);
 
-        // Assert response
-        $this->assertEquals(401, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals('Email ou mot de passe incorrect', $responseData['error']);
+        $response->assertStatus(401)
+            ->assertJson(['error' => 'Email ou mot de passe incorrect']);
     }
 
-    public function testMeReturnsAuthenticatedUser()
+    public function test_me()
     {
-        // Mock authenticated user
-        $user = new User();
-        $user->forceFill(['name' => 'John Doe', 'email' => 'john@example.com']);
+        $user = new User([
+            'name' => 'Fatima',
+            'email' => 'fatima@example.com',
+            'role' => 'client'
+        ]);
 
         Auth::shouldReceive('user')
             ->once()
             ->andReturn($user);
 
-        // Execute me
-        $response = $this->authRepository->me();
+        $repo = new AuthRepository();
+        $response = $repo->me();
 
-        // Assert response
-        $this->assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals($user->name, $responseData['name']);
-        $this->assertEquals($user->email, $responseData['email']);
+        $response->assertStatus(200)
+            ->assertJson([
+                'name' => 'Fatima',
+                'email' => 'fatima@example.com',
+                'role' => 'client'
+            ]);
     }
 }
