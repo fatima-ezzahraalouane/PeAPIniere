@@ -10,14 +10,17 @@ use App\Repositories\Interfaces\AuthRepositoryInterface;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+use App\DTO\RegisterDTO;
+use App\DTO\LoginDTO;
+
 class AuthRepository implements AuthRepositoryInterface
 {
-    public function register(Request $request)
+    public function register(RegisterDTO $data)
     {
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
+            'name'     => $data->name,
+            'email'    => $data->email,
+            'password' => Hash::make($data->password),
             'role'     => $request->role ?? 'client',
         ]);
 
@@ -29,10 +32,13 @@ class AuthRepository implements AuthRepositoryInterface
         ], 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginDTO $data)
     {
-        $credentials = $request->only('email', 'password');
-
+        $credentials = [
+            'email'    => $data->email,
+            'password' => $data->password,
+        ];
+        
         if (!Auth::attempt($credentials)) {
             return response()->json(['error' => 'Email ou mot de passe incorrect'], 401);
         }
