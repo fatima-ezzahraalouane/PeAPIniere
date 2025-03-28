@@ -1,69 +1,131 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Repositories;
 
-use Tests\TestCase;
+use Mockery;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Repositories\CategoryRepository;
+use Illuminate\Http\Request;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
+use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $repo;
+    protected $categoryRepository;
+    protected $requestMock;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
-        $this->repo = new CategoryRepository();
+        
+        $this->requestMock = Mockery::mock(Request::class);
+        $this->categoryRepository = new CategoryRepository();
     }
 
-    public function test_index_returns_all_categories()
+    public function tearDown(): void
     {
-        Category::factory()->count(3)->create();
-
-        $categories = $this->repo->index();
-
-        $this->assertCount(3, $categories);
+        Mockery::close();
+        parent::tearDown();
     }
 
-    public function test_store_creates_new_category()
+    public function testIndexReturnsAllCategories()
     {
-        $request = new Request(['name' => 'Fleurs']);
+        // Create actual Category records in the database
+        $categories = Category::factory()->count(2)->create();
 
-        $category = $this->repo->store($request);
+        $result = $this->categoryRepository->index();
 
-        $this->assertEquals('Fleurs', $category->name);
-        $this->assertDatabaseHas('categories', ['name' => 'Fleurs']);
+        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertCount(2, $result);
     }
 
-    public function test_show_returns_category_by_slug()
+    public function testStoreCreatesNewCategory()
     {
-        $category = Category::factory()->create(['name' => 'Fruits']);
-        $found = $this->repo->show($category->slug);
+        $categoryData = [
+            'name' => 'New Category'
+        ];
 
-        $this->assertEquals($category->id, $found->id);
+        $this->requestMock
+            ->shouldReceive('input')
+            ->with('name')
+            ->andReturn($categoryData['name']);
+
+        $result = $this->categoryRepository->store($this->requestMock);
+
+        $this->assertInstanceOf(Category::class, $result);
+        $this->assertEquals($categoryData['name'], $result->name);
+        $this->assertDatabaseHas('categories', [
+            'name' => $categoryData['name']
+        ]);
     }
 
-    public function test_update_modifies_category_name()
+    public function testShowReturnsCategoryBySlug()
     {
-        $category = Category::factory()->create(['name' => 'Légumes']);
-        $request = new Request(['name' => 'Plantes']);
+        // Create an actual Category in the database
+        $category = Category::factory()->create([
+            'name' => 'Test Category',
+            'slug' => 'test-category'
+        ]);
 
-        $updated = $this->repo->update($request, $category->slug);
+        $result = $this->categoryRepository->show('test-category');
 
-        $this->assertEquals('Plantes', $updated->name);
-        $this->assertDatabaseHas('categories', ['name' => 'Plantes']);
+        $this->assertInstanceOf(Category::class, $result);
+        $this->assertEquals($category->slug, $result->slug);
+        $this->assertEquals($category->name, $result->name);
     }
 
-    public function test_destroy_deletes_category()
+    public function testUpdateModifiesExistingCategory()
     {
-        $category = Category::factory()->create();
-        $response = $this->repo->destroy($category->slug);
+        // Create an existing category
+        $existingCategory = Category::factory()->create([
+            'name' => 'Original Category',
+            'slug' => 'original-category'
+        ]);
 
-        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
-        $this->assertEquals('Catégorie supprimée avec succès.', $response->getData()->message);
+        $newName = 'Updated Category';
+
+        $this->requestMock
+            ->shouldReceive('input')
+            ->with('name')
+            ->andReturn($newName);
+
+        $result = $this->categoryRepository->update($this->requestMock, 'original-category');
+
+        $this->assertInstanceOf(Category::class, $result);
+        $this->assertEquals($newName, $result->name);
+        $this->assertDatabaseHas('categories', [
+            'name' => $newName,
+            'slug' => 'original-category'
+        ]);
+    }
+
+    public function testDestroyDeletesCategory()
+    {
+        // Create an existing category
+        $category = Category::factory()->create([
+            'name' => 'Category to Delete',
+            'slug' => 'category-to-delete'
+        ]);
+
+        $response = $this->categoryRepository->destroy('category-to-delete');
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertEquals('Catégorie supprimée avec succès.', $responseData['message']);
+        $this->assertDatabaseMissing('categories', [
+            'slug' => 'category-to-delete'
+        ]);
+    }
+
+    public function testShowThrowsExceptionForNonExistentSlug()
+    {
+        $this->expectException(ModelNotFoundException::class);
+        $this->categoryRepository->show('non-existent-slug');
     }
 }
