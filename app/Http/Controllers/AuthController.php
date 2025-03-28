@@ -7,6 +7,9 @@ use App\Http\Requests\RegisterRequest;
 use App\Repositories\Interfaces\AuthRepositoryInterface;
 use Illuminate\Http\Request;
 
+use App\DTO\RegisterDTO;
+use App\DTO\LoginDTO;
+
 
 /**
  * @OA\Info(
@@ -64,7 +67,8 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        return $this->auth->register($request);
+        $dto = new RegisterDTO($request->validated());
+        return $this->auth->register($dto);
     }
 
 
