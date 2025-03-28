@@ -1,66 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🌿 PéAPInière API - Connecter la nature au digital
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Bienvenue dans **PéAPInière** 🌱, l'API officielle d'une pépinière en pleine croissance qui vise à révolutionner la gestion des plantes, des commandes et des rôles utilisateurs à travers une plateforme robuste, sécurisée et moderne.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🔍 Contexte du projet
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Notre pépinière connaît une belle croissance et nous souhaitons **améliorer notre efficacité, automatiser nos processus** et **offrir une meilleure expérience client**.  
+Ce projet a pour but de centraliser la **gestion des stocks, des ventes** et de proposer une interface fluide pour nos clients, nos employés et notre équipe administrative.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🎯 Objectifs
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- 🚀 Développer une API RESTful performante et sécurisée
+- 🪴 Gérer les plantes (CRUD + images)
+- 🧾 Suivre les commandes des clients
+- 👥 Gérer les utilisateurs avec différents rôles (`Client`, `Employé`, `Admin`)
+- 📊 Offrir des statistiques avancées pour l’administrateur
+- 🧪 Intégrer des tests unitaires & une documentation complète
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🧑‍💻 Technologies utilisées
 
-## Laravel Sponsors
+- ⚙️ **Laravel** 10+ (architecture MVC + Repository Pattern)
+- 🐘 **PostgreSQL**
+- 🔐 **JWT Authentication** pour une sécurité optimale
+- 📂 **Spatie/Sluggable** pour des slugs SEO-friendly
+- 🧪 **PHPUnit** pour les tests unitaires
+- 📮 **Postman** pour tester l’API
+- 🧾 **Swagger** pour documenter chaque endpoint
+- 🛠️ **DTO (Data Transfer Objects)** pour structurer les données
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 📚 User Stories
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 👤 Clients
+- 🔐 S’inscrire / se connecter via JWT
+- 🪴 Voir toutes les plantes disponibles (nom, description, prix, images, catégorie)
+- 🔎 Voir les détails d’une plante via son **slug**  
+  `GET /api/plants/basilic-aromatique`
+- 🧺 Passer une commande en choisissant les slugs + quantités
+- 🆗 Suivre l’état de la commande : `en attente`, `en préparation`, `livrée`
+- ❌ Annuler une commande si elle n’a pas encore été préparée
 
-## Contributing
+### 🧑‍🏭 Employés
+- 🔐 Se connecter avec des permissions adaptées
+- ⌛ Marquer une commande comme **préparée**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 👑 Administrateurs
+- 🎍 Gérer les plantes & catégories (CRUD complet)
+- 📊 Accéder à des statistiques :
+  - Total des commandes
+  - Revenu total
+  - Plantes les plus commandées
+  - Ventes par catégorie
 
-## Code of Conduct
+### 💻 Développeurs
+- ✅ Écrire des **tests unitaires** :
+  - Authentification
+  - Slugs
+  - CRUD catégories
+- 📮 Documenter chaque endpoint avec **Swagger**
+- 🚧 Gérer les exceptions avec messages & codes HTTP adaptés
+- 📦 Implémenter un **DAO (Data Access Object)** pour une couche data propre
+- 🧠 Documenter chaque requête **Query Builder** pour faciliter la compréhension
+- 🛡️ Utiliser des **DTO** pour valider les données échangées
+- 🖼️ Limiter chaque plante à **4 images maximum**, avec message d’erreur clair :  
+  `"Limite de 4 images par plante dépassée."`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🧪 Tests et documentation
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- 🧾 Swagger UI disponible à `/api/documentation`
+- ✔️ Tests unitaires via `PHPUnit`
+- 🔬 Tests d’intégration en cours (Postman collection exportable)
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📫 Contact
+
+Développé avec ❤️ par **Fatima-Ezzahra Alouane**  
+📧 [falouane38@exemple.com]  
+🔗 [LinkedIn](https://www.linkedin.com/in/fatima-ezzahra-alouane/)
+
+---
+
+> "L'innovation, c’est rendre les choses complexes accessibles à tous – même la nature 🌱."  
+> — *PéAPInière, la tech au service du vivant.*
+
