@@ -48,7 +48,7 @@ Ce projet a pour but de centraliser la **gestion des stocks, des ventes** et de 
 
 ### 🧑‍🏭 Employés
 - 🔐 Se connecter avec des permissions adaptées
-- ⌛ Marquer une commande comme **préparée**
+- ⌛ Marquer une commande comme **en préparation** ou **livrée**
 
 ### 👑 Administrateurs
 - 🎍 Gérer les plantes & catégories (CRUD complet)
