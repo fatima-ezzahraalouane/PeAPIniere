@@ -98,7 +98,8 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        return $this->auth->login($request);
+        $dto = new LoginDTO($request->validated());
+        return $this->auth->login($dto);
     }
 
 
