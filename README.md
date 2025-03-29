@@ -77,7 +77,7 @@ Ce projet a pour but de centraliser la **gestion des stocks, des ventes** et de 
 
 - 🧾 Swagger UI disponible à `/api/documentation`
 - ✔️ Tests unitaires via `PHPUnit`
-- 🔬 Tests d’intégration en cours (Postman collection exportable)
+- 🔬 Tester l’API avec Postman grâce à une collection exportable
 
 ---
 
