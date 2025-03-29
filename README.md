@@ -59,10 +59,10 @@ Ce projet a pour but de centraliser la **gestion des stocks, des ventes** et de 
   - Ventes par catégorie
 
 ### 💻 Développeurs
-- ✅ Écrire des **tests unitaires** :
-  - Authentification
+- ✅ Écrire des **tests unitaires** 
+  <!-- - Authentification
   - Slugs
-  - CRUD catégories
+  - CRUD catégories -->
 - 📮 Documenter chaque endpoint avec **Swagger**
 - 🚧 Gérer les exceptions avec messages & codes HTTP adaptés
 - 📦 Implémenter un **DAO (Data Access Object)** pour une couche data propre
